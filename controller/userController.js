@@ -19,7 +19,6 @@ exports.saveUser=(req,res)=>{
 }
 
 exports.signin = (req, res) => {
-    // console.log("000000000000000000000000000000000000000000000000000000000")
     const { email, password } = req.body;
   
     User.findOne({ email }, (err, user) => {
@@ -35,14 +34,14 @@ exports.signin = (req, res) => {
         });
       }
   
-      const token = jwt.sign({ _id: user._id }, 'samplepro');
+      const token = jwt.sign({ _id: user._id }, 'sampleprocheck');
       const { _id, name, email, role } = user;
       return res.json({ token, user: { _id, name, email, role } });
     });
   };
 
   exports.isSignedIn = expressJwt({
-    secret:'samplepro',
+    secret:'sampleprocheck',
     userProperty: "auth",
     algorithms: ['sha1', 'RS256', 'HS256'],
   });

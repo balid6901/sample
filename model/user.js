@@ -14,11 +14,10 @@ var userSchema = new mongoose.Schema(
       required: true,
       unique: true
     },
-    encry_password: {
+    password: {
       type: String,
       required: true
     },
-    salt: String,
     role: {
       type: Number,
       default: 0
@@ -27,33 +26,11 @@ var userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema
-  .virtual("password")
-  .set(function(password) {
-    this._password = password;
-    this.salt = uuidv1();
-    this.encry_password = this.securePassword(password);
-  })
-  .get(function() {
-    return this._password;
-  });
 
 userSchema.methods = {
   autheticate: function(plainpassword) {
-    return this.securePassword(plainpassword) === this.encry_password;
+    return plainpassword === this.password;
   },
-
-  securePassword: function(plainpassword) {
-    if (!plainpassword) return "";
-    try {
-      return crypto
-        .createHmac("sha256", this.salt)
-        .update(plainpassword)
-        .digest("hex");
-    } catch (err) {
-      return "";
-    }
-  }
 };
 
 module.exports = mongoose.model("User", userSchema);
